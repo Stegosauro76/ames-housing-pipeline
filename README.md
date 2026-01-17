@@ -1,227 +1,206 @@
-Ames Housing – End-to-End Machine Learning Evaluation Framework
-Descrizione del progetto
+# Ames Housing Dataset: Comprehensive Machine Learning Evaluation Framework
 
-Questo repository contiene un framework completo di Data Science e Machine Learning applicato al Ames Housing Dataset.
-L’obiettivo è analizzare il dataset in modo sistematico e valutarne le prestazioni su tre diversi task di apprendimento automatico:
+## Overview
 
-Regression: previsione del prezzo di vendita delle abitazioni
+This repository implements a complete end-to-end machine learning pipeline for the Ames Housing Dataset, encompassing exploratory data analysis, feature engineering, and model evaluation across three distinct learning paradigms: regression, unsupervised clustering, and classification. The framework is designed to demonstrate best practices in data science workflows while addressing real-world challenges inherent in housing market data.
 
-Clustering: individuazione di pattern e segmenti latenti nel mercato immobiliare
+## Project Objectives
 
-Classification: categorizzazione degli immobili in fasce di prezzo (Low / Medium / High)
+The primary goal is to conduct a systematic evaluation of machine learning approaches applied to residential property valuation, specifically:
 
-Il progetto copre l’intero ciclo di vita di un’analisi di Data Science: dalla pulizia dei dati alla feature engineering, dalla selezione delle feature alla validazione dei modelli, fino alla sintesi finale dei risultati.
+- **Regression Analysis**: Predict continuous sale prices of residential properties
+- **Clustering Analysis**: Identify latent market segments and property groupings
+- **Classification Task**: Categorize properties into discrete price brackets (Low, Medium, High)
 
-Dataset
+This multi-task approach enables comprehensive assessment of the dataset's characteristics and the comparative effectiveness of different modeling strategies.
 
-Il dataset utilizzato è il Ames Housing Dataset, largamente impiegato in ambito accademico come alternativa più realistica al Boston Housing Dataset.
+## Dataset Description
 
-Caratteristiche principali:
+The Ames Housing Dataset serves as a modern, more comprehensive alternative to the traditional Boston Housing Dataset, offering enhanced complexity and realism for academic and professional machine learning applications.
 
-Oltre 80 variabili descrittive per ogni abitazione
+**Key Characteristics:**
+- **Features**: 80+ descriptive variables per property
+- **Feature Types**: Mixed numerical and categorical attributes
+- **Data Quality**: Contains missing values, outliers, and high-cardinality categorical variables
+- **Target Variable**: `SalePrice` (continuous)
+- **Source**: Located in `data/AmesHousing.csv`
 
-Feature numeriche e categoriche
+The dataset presents realistic challenges including data quality issues, feature heterogeneity, and complex relationships between predictors and target variables.
 
-Presenza di valori mancanti, outlier e variabili ad alta cardinalità
+## Repository Structure
 
-Target principale: SalePrice
-
-Il dataset è incluso nella cartella data/ con il nome AmesHousing.csv.
-
-Struttura del repository
+```
 ├── data/
 │   └── AmesHousing.csv
-│
 ├── images/
 │   ├── eda/
 │   ├── feature_importance/
 │   └── clustering/
-│
 ├── src/
 │   └── ames_housing_evaluator.py
-│
 ├── report/
 │   └── ames_housing_report.tex
-│
 ├── README.md
 └── requirements.txt
+```
 
+**Directory Descriptions:**
+- `data/`: Raw dataset files
+- `images/`: Generated visualizations organized by analysis type
+- `src/`: Core Python implementation
+- `report/`: Technical documentation in LaTeX format
+- `requirements.txt`: Python dependency specifications
 
-Descrizione:
+## Methodology
 
-data/: dataset utilizzato per l’analisi
+### 1. Exploratory Data Analysis (EDA)
 
-images/: grafici e visualizzazioni (EDA, importanza delle feature, clustering)
+The initial analysis phase encompasses:
 
-src/: codice Python principale del progetto
+- Univariate and multivariate distribution analysis
+- Data type identification and cardinality assessment
+- Missing value pattern detection and quantification
+- Target variable (`SalePrice`) distribution characterization
+- Statistical moment analysis (skewness, kurtosis)
+- Correlation structure examination
 
-report/: relazione tecnica in LaTeX (opzionale)
+### 2. Data Preprocessing and Feature Engineering
 
-requirements.txt: dipendenze Python
+A robust preprocessing pipeline designed to prevent data leakage includes:
 
-Metodologia
-Analisi esplorativa dei dati (EDA)
+**Data Cleaning:**
+- Removal of non-predictive identifier columns
+- Outlier detection and treatment via Interquartile Range (IQR) clipping
 
-L’analisi iniziale include:
+**Feature Engineering:**
+- Derived features: `TotalSF` (total square footage), `HouseAge`, `SinceRemod` (time since remodeling)
+- Logarithmic transformation of target variable to reduce skewness
 
-Distribuzione delle variabili
+**Missing Value Imputation:**
+- Numerical features: Median imputation
+- Categorical features: Dedicated "Missing" category
 
-Tipi di dato e cardinalità
+**Encoding Strategies:**
+- **Low-cardinality categoricals**: One-Hot Encoding
+- **High-cardinality categoricals**: Frequency Encoding combined with out-of-fold Target Encoding
 
-Analisi dei valori mancanti
+**Standardization:**
+- Zero-variance feature removal
+- Z-score normalization of numerical features
 
-Studio della distribuzione del target (SalePrice)
+### 3. Feature Selection
 
-Valutazione di skewness e kurtosis
+Feature selection employs Mutual Information Regression to identify the k most informative features relative to the log-transformed target variable. This approach:
 
-Preprocessing e Feature Engineering
+- Reduces dimensionality and computational complexity
+- Enhances model generalization capability
+- Improves cross-validation stability
+- Mitigates multicollinearity effects
 
-Il preprocessing è progettato per essere robusto e prevenire il data leakage. Include:
+## Machine Learning Tasks
 
-Rimozione di colonne identificative
+### Regression
 
-Creazione di nuove feature (es. TotalSF, HouseAge, SinceRemod)
+**Objective**: Predict continuous sale prices
 
-Trasformazione logaritmica del target per ridurre la skewness
+**Model Architecture:**
+- Algorithm: Random Forest Regressor
+- Validation: K-Fold Cross-Validation
 
-Imputazione dei valori mancanti (mediana per numeriche, categoria “Missing” per categoriche)
+**Evaluation Metrics:**
+- Coefficient of Determination (R²)
+- Root Mean Squared Error (RMSE, log-scale)
+- Mean Absolute Error (MAE, log-scale)
+- Feature importance analysis
 
-Gestione degli outlier tramite clipping basato su IQR
+### Clustering
 
-Encoding delle variabili categoriche:
+**Objective**: Discover latent market segments
 
-One-Hot Encoding per bassa cardinalità
+**Methodology:**
+- Dimensionality reduction: Principal Component Analysis (85% variance retention)
+- Primary algorithm: K-Means clustering
+- Alternative approach: DBSCAN (density-based clustering)
 
-Frequency Encoding + Target Encoding Out-of-Fold per alta cardinalità
+**Evaluation Metrics:**
+- Silhouette Score (cluster cohesion and separation)
+- Davies-Bouldin Index (cluster compactness)
 
-Rimozione di feature a varianza nulla
+### Classification
 
-Standardizzazione delle feature numeriche
+**Objective**: Categorize properties into price tiers
 
-Feature Selection
+**Configuration:**
+- Target classes: Low, Medium, High price brackets
+- Algorithm: Random Forest Classifier
+- Validation: K-Fold Cross-Validation
 
-La selezione delle feature viene effettuata tramite Mutual Information Regression, selezionando le k feature più informative rispetto al target log-trasformato.
+**Evaluation Metrics:**
+- Classification Accuracy
+- Weighted F1-Score
+- Precision and Recall
+- Baseline comparison (most frequent class predictor)
 
-Questa fase consente di:
+## Results Summary
 
-Ridurre la dimensionalità
+Empirical evaluation demonstrates that the Ames Housing Dataset exhibits:
 
-Migliorare la generalizzazione dei modelli
+- **Strong Regression Performance**: High predictive accuracy attributable to feature richness and information content
+- **Effective Classification**: Clear separability between price tiers enables robust categorization
+- **Moderate Clustering Structure**: Latent patterns exist but are less pronounced compared to supervised learning tasks
 
-Aumentare la stabilità delle performance in cross-validation
+Detailed quantitative results, including performance metrics and statistical significance tests, are documented in execution logs and the technical report.
 
-Modelli e task di apprendimento
-Regressione
+## Technical Requirements
 
-Modello: Random Forest Regressor
+**Environment:**
+- Python 3.8 or higher
 
-Validazione: K-Fold Cross-Validation
+**Dependencies:**
+- `pandas`: Data manipulation and analysis
+- `numpy`: Numerical computing
+- `scikit-learn`: Machine learning algorithms and tools
+- `scipy`: Scientific computing and statistics
+- `matplotlib`: Visualization
+- `seaborn`: Statistical data visualization
 
-Metriche:
-
-R²
-
-RMSE (scala logaritmica)
-
-MAE (scala logaritmica)
-
-Analisi delle feature più importanti
-
-Clustering
-
-Algoritmi utilizzati:
-
-K-Means (principale)
-
-DBSCAN (opzionale)
-
-Riduzione dimensionale tramite PCA (85% della varianza spiegata)
-
-Metriche di valutazione:
-
-Silhouette Score
-
-Davies–Bouldin Index
-
-Classificazione
-
-Target: fasce di prezzo (Low, Medium, High)
-
-Modello: Random Forest Classifier
-
-Validazione: K-Fold Cross-Validation
-
-Metriche:
-
-Accuracy
-
-F1-score (weighted)
-
-Precision
-
-Recall
-
-Confronto con baseline basata sulla classe più frequente
-
-Risultati
-
-I risultati mostrano che il dataset Ames Housing è particolarmente adatto a:
-
-Regression: forte capacità predittiva grazie alla ricchezza delle feature
-
-Classification: buona separabilità tra le fasce di prezzo
-
-Clustering: struttura latente presente ma meno marcata rispetto ai task supervisionati
-
-I dettagli quantitativi sono riportati nel log di esecuzione e, opzionalmente, nella relazione in LaTeX.
-
-Requisiti
-
-Il progetto richiede Python 3.8+ e le principali librerie di Data Science:
-
-pandas
-
-numpy
-
-scikit-learn
-
-scipy
-
-matplotlib
-
-seaborn
-
-Per installare le dipendenze:
-
+**Installation:**
+```bash
 pip install -r requirements.txt
+```
 
-Esecuzione
+## Execution Instructions
 
-Per eseguire l’intero workflow:
+To execute the complete analytical pipeline:
 
+```bash
 python src/ames_housing_evaluator.py
+```
 
+The script performs the following operations sequentially:
+1. Dataset loading and initial inspection
+2. Preprocessing and feature engineering
+3. Feature selection
+4. Regression model training and evaluation
+5. Clustering analysis
+6. Classification model assessment
+7. Consolidated results reporting
 
-Il programma esegue automaticamente:
+## Future Enhancements
 
-Analisi del dataset
+Potential extensions to enhance the framework:
 
-Preprocessing
+- **Hyperparameter Optimization**: Grid Search or Bayesian Optimization for improved model performance
+- **Model Comparison**: Evaluation of linear models (Ridge, Lasso) and gradient boosting algorithms (XGBoost, LightGBM)
+- **Model Interpretability**: SHAP (SHapley Additive exPlanations) values for feature contribution analysis
+- **Interactive Presentation**: Jupyter Notebook implementation for educational and demonstrative purposes
+- **Pipeline Integration**: Fully integrated scikit-learn Pipeline for production deployment
+- **Ensemble Methods**: Stacking and blending strategies for prediction aggregation
 
-Feature selection
+## License
 
-Valutazione di regressione, clustering e classificazione
+This project is intended for academic and educational purposes.
 
-Generazione del riepilogo finale
+## Acknowledgments
 
-Possibili estensioni
-
-Hyperparameter tuning (Grid Search / Bayesian Optimization)
-
-Confronto con modelli lineari e boosting
-
-Analisi SHAP per interpretabilità
-
-Versione notebook per presentazione didattica
-
-Pipeline completamente integrata con scikit-learn
+The Ames Housing Dataset was compiled by Dean De Cock for use in data science education as an alternative to the Boston Housing Dataset.
